@@ -1,45 +1,46 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
-import os
-from flask import Flask, request, jsonify, url_for
-from flask_migrate import Migrate
-from flask_swagger import swagger
-from flask_cors import CORS
-from utils import APIException, generate_sitemap
-from admin import setup_admin
-from models import db, User
-#from models import Person
+import random
 
-app = Flask(__name__)
-app.url_map.strict_slashes = False
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_CONNECTION_STRING')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-MIGRATE = Migrate(app, db)
-db.init_app(app)
-CORS(app)
-setup_admin(app)
 
-# Handle/serialize errors like a JSON object
-@app.errorhandler(APIException)
-def handle_invalid_usage(error):
-    return jsonify(error.to_dict()), error.status_code
+# datos iniciales 
+surnames = ['10', 'juan', '@12', 'null', 'antonioPerezDelCarmen', 'abcdefghtioiasoisdjads', 'Manolo', 'Perez', 'Soledad']
+escuses = ['OMG?', 'Whats going on?', 'How much is it?', 'undefined']
+dates = ['Jeferson', 'Matilda', 'R@fael', '1van', 'Pep3', 'Loquesea', 'Fel1berto', 'Pepit@', 'D@M']
 
-# generate sitemap with all your endpoints
-@app.route('/')
-def sitemap():
-    return generate_sitemap(app)
+# 1 - crear una funcion que genere una escusa aleatoria con esos datos 
+def excuse_generator(who, what, when):
+	ran_who = who[random.randint(0, len(who)-1)]
+	ran_what = what[random.randint(0, len(what)-1)]
+	ran_when = when[random.randint(0, len(when)-1)]
+	print(ran_who+ ' ' + ran_what + ' ' + ran_when)
+excuse_generator(surnames, escuses, dates)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
+# 2 - creeis otra funcion que cuente el numero de repeticiones de letras en cada array
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
+count_dic = {}
+def letter_counter(arr):
+    for word in arr:
+        for char in word:
+            if char == count_dic:
+                count_dic[char] =+ 1
+            else: 
+                count_dic[char] = 1
+    return count_dic
+print(letter_counter(surnames))
 
-    return jsonify(response_body), 200
+# 3 - suprimir repeticiones en un array y devolver el array sin la repeticion
 
-# this only runs if `$ python src/main.py` is executed
-if __name__ == '__main__':
-    PORT = int(os.environ.get('PORT', 3000))
-    app.run(host='0.0.0.0', port=PORT, debug=False)
+def no_rep(arr):
+    return list(set(arr))
+    
+print(no_rep(surnames))
+
+# 4 - function que invierta todos los valores de el array
+
+def inverted(arr):
+    new_arr = []
+    for i in range(0, len(arr)):
+        for j in arr[i][::-1]:
+            new_arr.append(j[::-1])
+    return new_arr
+
+print(inverted(surnames))
